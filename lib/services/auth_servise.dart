@@ -7,8 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../application/ui/constants/constants.dart';
 import '../application/ui/screens/bringing_screen/cod_sms_screen.dart';
-import '../application/ui/screens/bringing_screen/registration_phone_screen.dart';
-import '../application/ui/screens/main_tabs/main_tabs_screen.dart';
 
 class AuthService {
 
