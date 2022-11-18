@@ -15,16 +15,16 @@ class AuthService {
   User? user;
 
   Future<UserData?> loginPhone(String userPhone) async {
-
     auth.verifyPhoneNumber(
       phoneNumber: userPhone,
       verificationCompleted: (PhoneAuthCredential credential) async {
         await auth.signInWithCredential(credential).then((value) {
           if (value.user != null) {
-
+            String? phoneNumber = user!.phoneNumber;
+            print(phoneNumber);
 
             UserSecureStorage.setUid(user!.uid);
-            UserSecureStorage.setPhoneNumber(user!.phoneNumber.toString());
+            UserSecureStorage.setPhoneNumber(phoneNumber!);
 
             Fluttertoast.showToast(
               msg: 'Регистрация завершена.',

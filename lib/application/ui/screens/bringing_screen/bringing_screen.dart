@@ -11,7 +11,7 @@ import 'package:analoguebbcars/application/data/get_pages/get_pages.dart';
 
 class BringingScreen extends StatelessWidget {
   BringingScreen({Key? key}) : super(key: key);
- final String? userPhone = UserSecureStorage.getPhoneNumber().toString();
+  String? userPhone = UserSecureStorage.getPhoneNumber().toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +52,7 @@ class BringingScreen extends StatelessWidget {
               text: 'Вход',
               press: () =>
                 userPhone != null ?
-                AuthService().loginPhone(userPhone!.toString()) : Get.to(const RegistrationPhoneScreen()),
+                AuthService().loginPhone(userPhone!) : Get.to(const RegistrationPhoneScreen()),
               //Get.to(const RegistrationPhoneScreen()),
               color: primaryColor,
             ),
