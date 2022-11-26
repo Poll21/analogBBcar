@@ -1,36 +1,38 @@
 import 'package:analoguebbcars/application/data/data_user/user_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class UserSecureStorage{
-  static const _storage = FlutterSecureStorage();
+abstract class _FlutterSecureStorageKeys {
   static const _keyUid = 'uid';
   static const _keyPhoneNumber = 'phoneNumber';
   static const _keyToken = '_keyToken';
-  late String pU;
+}
 
-//запись и чтение uid в хранилище
-  static Future setUid(String uid) async =>
-      await _storage.write(key: _keyUid, value: uid);
-  static Future<String?> getUid() async =>
-      await _storage.read(key: _keyUid);
+class UserSecureStorage {
+  final _secureStorage = const FlutterSecureStorage();
+
+  //запись uid в хранилище
+  Future setUid(String? uid) async =>
+      await _secureStorage.write(key: _FlutterSecureStorageKeys._keyUid, value: uid);
+  // чтение uid из хранилища
+  Future<String?> getUid() async =>
+      await _secureStorage.read(key: _FlutterSecureStorageKeys._keyUid);
 
   //запись и чтение номера телефона в хранилище
-  static Future setPhoneNumber(String phoneNumber) async =>
-      await _storage.write(key: _keyPhoneNumber, value: phoneNumber);
+  Future setPhoneNumber(String? phoneNumber) async =>
+      await _secureStorage.write(key: _FlutterSecureStorageKeys._keyPhoneNumber, value: phoneNumber);
 
-  static Future<String?> getPhoneNumber() async  =>
-    await _storage.read(key: _keyPhoneNumber);
-
-
-
-//запись и чтение Token в хранилище
-  static Future setToken(int token) async =>
-      await _storage.write(key:_keyToken, value: token.toString());
-  static Future<String?> getToken() async {
-     await _storage.read(key: _keyToken);
-
+  Future<String?> getPhoneNumber() async {
+    final phoneNumber = await _secureStorage.read(key: _FlutterSecureStorageKeys._keyPhoneNumber);
+    print(phoneNumber);
+    return phoneNumber;
   }
 
 
+//запись и чтение Token в хранилище
+  Future setToken(String? token) async =>
+      await _secureStorage.write(key: _FlutterSecureStorageKeys._keyToken, value: token);
 
+  Future<String?> getToken() async {
+    await _secureStorage.read(key: _FlutterSecureStorageKeys._keyToken);
+  }
 }

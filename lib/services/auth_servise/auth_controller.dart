@@ -5,26 +5,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import '../application/ui/constants/constants.dart';
-import '../application/ui/screens/bringing_screen/cod_sms_screen.dart';
+import '../../application/ui/constants/constants.dart';
+import '../../application/ui/screens/bringing_screen/cod_sms_screen.dart';
 
-class AuthService {
+class AuthController extends GetxController {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  Rx<User?> _firebaseUser = Rx<User?>(null);
 
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  User? user;
+  User? get user => _firebaseUser.value;
 
   Future<UserData?> loginPhone(String userPhone) async {
-    auth.verifyPhoneNumber(
+    _auth.verifyPhoneNumber(
       phoneNumber: userPhone,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential).then((value) {
+        await _auth.signInWithCredential(credential).then((value) {
           if (value.user != null) {
             String? phoneNumber = user!.phoneNumber;
             print(phoneNumber);
-
-            UserSecureStorage.setUid(user!.uid);
-            UserSecureStorage.setPhoneNumber(phoneNumber!);
+            UserSecureStorage().setToken(user!.uid);
+            UserSecureStorage().setPhoneNumber(user!.phoneNumber);
 
             Fluttertoast.showToast(
               msg: 'Регистрация завершена.',
@@ -35,10 +34,10 @@ class AuthService {
               textColor: Colors.white,
               fontSize: 20,
             );
-            Get.to(const RegistrationProfileScreen());
+            Get.to(RegistrationProfileScreen());
 
             return UserData.fromFirebase(user!);
-          }else {
+          } else {
             return null;
           }
         });
@@ -60,6 +59,10 @@ class AuthService {
       //timeout: Duration(seconds: 120),//Обработка тайм-аута при сбое автоматической обработки SMS-кода.
       codeSent: (String verificationID, int? resendToken) {
         if (resendToken != null) {
+          print(resendToken);
+          Get.to(CodSmsScreen(
+              verificationCode: verificationID, resendToken: resendToken));
+          UserSecureStorage().setToken(resendToken.toString());
           Fluttertoast.showToast(
             msg:
                 'На ваш номер отправлен SMS-код, не сообщайте его третьим лицам',
@@ -70,9 +73,6 @@ class AuthService {
             textColor: Colors.white,
             fontSize: 20,
           );
-          Get.to(CodSmsScreen(
-              verificationCode: verificationID, resendToken: resendToken));
-          UserSecureStorage.setToken(resendToken);
         }
         //код отправлен успешно
       },
@@ -91,21 +91,20 @@ class AuthService {
     );
   }
 
-
-
-  Future<UserData?> verifyOTP(String otpController, String verificationCode) async {
+  Future<UserData?> verifyOTP(
+      String otpController, String verificationCode) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationCode, smsCode: otpController);
 
-    await auth.signInWithCredential(credential).then(
+    await _auth.signInWithCredential(credential).then(
       (value) {
-        user = auth.currentUser;
+         _auth.currentUser;
       },
     ).whenComplete(
       () {
         if (user != null) {
-          UserSecureStorage.setUid(user!.uid);
-          UserSecureStorage.setPhoneNumber(user!.phoneNumber.toString());
+          UserSecureStorage().setUid(user!.uid);
+          UserSecureStorage().setPhoneNumber(user!.phoneNumber.toString());
 
           Fluttertoast.showToast(
             msg: 'Регистрация завершена.',
@@ -116,7 +115,7 @@ class AuthService {
             textColor: Colors.white,
             fontSize: 20,
           );
-          Get.to(const RegistrationProfileScreen());
+          Get.to(RegistrationProfileScreen());
           return UserData.fromFirebase(user!);
         } else {
           Fluttertoast.showToast(
@@ -129,25 +128,26 @@ class AuthService {
             fontSize: 20,
           );
 
-        return null;
-
+          return null;
         }
       },
     );
   }
 
   void smsResending(int resendToken) async {
+    print(resendToken);
     PhoneAuthCredential credential =
-    PhoneAuthProvider.credentialFromToken(resendToken);
-    await auth.signInWithCredential(credential);
+        PhoneAuthProvider.credentialFromToken(resendToken);
+    await _auth.signInWithCredential(credential);
   }
 
   Future<void> logout() async {
-    await auth.signOut();
+    await _auth.signOut();
   }
 
-  Stream<UserData?> get currentUser{
-    return auth.userChanges().map((User? user) => user != null ? UserData.fromFirebase(user) : null );
-    //toString((User user) => user != null ? UserData.fromFirebase(user) : null);
+  Stream<UserData?> get currentUser {
+    return _auth
+        .userChanges()
+        .map((User? user) => user != null ? UserData.fromFirebase(user) : null);
   }
 }

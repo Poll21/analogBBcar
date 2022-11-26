@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserData {
-  // final String displyName;
+  late String? uDisplyName;
   // final String email;
   // final String emailVerified;
   // final bool isAnonymus;
   // final String metaData;
-  late String phoneNumber;
+  late String? uPhoneNumber;
   // final String photoURL;
   // final String providerData;
   // final String refreshToken;
@@ -15,7 +15,8 @@ class UserData {
 
   UserData.fromFirebase(User user){
     id = user.uid;
-    phoneNumber = user.uid;
+    uPhoneNumber = user.phoneNumber;
+    uDisplyName = user.displayName;
   }
 
 

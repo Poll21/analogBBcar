@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screen_factory/screen_factory.dart';
-import 'package:analoguebbcars/services/auth_servise.dart';
+import 'package:analoguebbcars/services/auth_servise/auth_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class Screens {

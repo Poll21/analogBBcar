@@ -1,17 +1,17 @@
 import 'package:analoguebbcars/application/ui/constants/constants.dart';
-import 'package:analoguebbcars/application/ui/navigation/main_navigation.dart';
+import 'package:analoguebbcars/application/ui/my_app/my_app.dart';
 import 'package:analoguebbcars/application/ui/screens/bringing_screen/registration_phone_screen.dart';
-import 'package:analoguebbcars/application/ui/screens/bringing_screen/registration_profile_scrin.dart';
 import 'package:analoguebbcars/application/ui/widget/proceed_button.dart';
-import 'package:analoguebbcars/services/auth_servise.dart';
+import 'package:analoguebbcars/services/auth_servise/auth_controller.dart';
 import 'package:analoguebbcars/services/user_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:analoguebbcars/application/data/get_pages/get_pages.dart';
 
 class BringingScreen extends StatelessWidget {
   BringingScreen({Key? key}) : super(key: key);
-  String? userPhone = UserSecureStorage.getPhoneNumber().toString();
+final controller = Get.put(Controller());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,20 +50,28 @@ class BringingScreen extends StatelessWidget {
             const SizedBox(height: 32),
             ProceedButton(
               text: 'Вход',
-              press: () =>
-                userPhone != null ?
-                AuthService().loginPhone(userPhone!) : Get.to(const RegistrationPhoneScreen()),
-              //Get.to(const RegistrationPhoneScreen()),
+              press: () async{
+                final String? userPhone = await UserSecureStorage().getPhoneNumber();
+               if (userPhone != null) {
+                  await AuthService().loginPhone(userPhone!);
+                }else {
+                  Fluttertoast.showToast(
+                    msg: 'Вы не зарегистрированы! Пройдите процедуру регистрации',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 60,
+                    backgroundColor: errorColor,
+                    textColor: Colors.white,
+                    fontSize: 20,
+                  );
+                }
+              },
               color: primaryColor,
             ),
             const SizedBox(height: 32),
             ProceedButton(
               text: 'Регистрация',
-              press: () {
-                Get.to(const RegistrationPhoneScreen());
-              },
-
-              //Get.to(const RegistrationPhoneScreen()),
+              press: () => Get.to(const RegistrationPhoneScreen()),
               color: primaryColor,
             ),
           ],

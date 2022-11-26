@@ -1,5 +1,5 @@
 import 'package:analoguebbcars/application/ui/constants/constants.dart';
-import 'package:analoguebbcars/services/auth_servise.dart';
+import 'package:analoguebbcars/services/auth_servise/auth_controller.dart';
 import 'package:analoguebbcars/services/user_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -93,11 +93,9 @@ class _CodSmsScreenState extends State<CodSmsScreen> {
               ProceedButton(
                 text: 'ПОДТВЕРДИТЬ',
                 press: () {
-
                   AuthService().verifyOTP(otpController.text.toString(), widget.verificationCode);
                   if (AuthService().user!= null){
-                    Get.to(const RegistrationProfileScreen());
-
+                    Get.to(RegistrationProfileScreen());
                   }
                 },
 
@@ -105,15 +103,12 @@ class _CodSmsScreenState extends State<CodSmsScreen> {
               ),
               TextButton(
                 onPressed: () {
-
                    AuthService().smsResending(widget.resendToken);
                       print('$widget.resendToken');
-
-
                 },
                 child: const Text('Код не пришёл',
                     style: TextStyle(
-                        color: textActiveColor,
+                        color: errorColor,
                         fontSize: 15,
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.w500,

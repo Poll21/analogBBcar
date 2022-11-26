@@ -1,19 +1,16 @@
 import 'package:analoguebbcars/application/ui/navigation/main_navigation.dart';
 import 'package:analoguebbcars/application/ui/themes/app_theme.dart';
-import 'package:analoguebbcars/services/auth_servise.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../data/get_pages/get_pages.dart';
+import '../../../services/auth_servise/auth_binding.dart';
+import '../../../services/auth_servise/root/root.dart';
 import '../screens/bringing_screen/bringing_screen.dart';
 import '../screens/bringing_screen/registration_phone_screen.dart';
 
-class Controller extends GetxController{
-  var isLogin = AuthService().currentUser.obs;
-}
 
 class MyApp extends StatelessWidget {
   final mainNavigation = MainNavigation();
+
 
   MyApp({Key? key}) : super(key: key);
 
@@ -26,7 +23,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/registrationPhoneScreen', page:() => const RegistrationPhoneScreen()),
       ],
       // myGetPage,
-
+      initialBinding: AuthBinding(),
+      home: const Root(),
       title: 'CarBlaBla',
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,

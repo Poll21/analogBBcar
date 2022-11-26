@@ -34,7 +34,7 @@ class ScreenFactory {
   Widget makeRegistrationgPhone() => const RegistrationPhoneScreen();
   // Widget makeCodSms() =>  const CodSmsScreen(userPhone: '',);
   Widget makeMainTabs() => const MainTabsScreen();
-  Widget makeRegistrationProfile() => const RegistrationProfileScreen();
+  Widget makeRegistrationProfile() => RegistrationProfileScreen();
   Widget makeCarProfile() => const CarsProfileScreen();
   Widget makeCreateTrip() => const CreateTripScreen();
   Widget makeDriverProfile() => const DriverProfileScreen();
