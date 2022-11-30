@@ -12,7 +12,12 @@ class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rx<User?> _firebaseUser = Rx<User?>(null);
 
-  User? get user => _firebaseUser.value;
+    User? get user => _firebaseUser.value;
+
+  @override
+  onInit() {
+    _firebaseUser.bindStream(_auth.authStateChanges());
+  }
 
   Future<UserData?> loginPhone(String userPhone) async {
     _auth.verifyPhoneNumber(
@@ -145,9 +150,9 @@ class AuthController extends GetxController {
     await _auth.signOut();
   }
 
-  Stream<UserData?> get currentUser {
-    return _auth
-        .userChanges()
-        .map((User? user) => user != null ? UserData.fromFirebase(user) : null);
-  }
+  // Stream<UserData?> get currentUser {
+  //   return _auth
+  //       .userChanges()
+  //       .map((User? user) => user != null ? UserData.fromFirebase(user) : null);
+  // }
 }
